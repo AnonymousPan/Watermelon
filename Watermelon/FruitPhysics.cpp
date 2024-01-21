@@ -1,0 +1,165 @@
+#include "FruitPhysics.h"
+
+void tickFruits(WatermelonGame* game, float dt)
+{
+	for (FruitObject* fruit : game->fruitObjects)
+	{
+		if (!fruit->isDummy)
+		{
+			// Update acceleration by total force
+			glm::vec2 totalForce = FruitPhysics::calcTotalForce(game, fruit);
+			// a = F / m
+			fruit->acceleration = totalForce / fruit->getMass();
+		}
+	}
+
+	for (FruitObject* fruit : game->fruitObjects)
+	{
+		// Update velocity by acceleration
+		fruit->velocity += fruit->acceleration * dt;
+
+		// Update position by velocity
+		fruit->position += fruit->velocity * dt;
+	}
+	/*
+	// Update acceleration by total force
+	glm::vec2 totalForce = FruitPhysics::calcTotalForce(game, fruit);
+	// a = F / m
+	fruit->acceleration = totalForce / fruit->getMass();
+
+	// Update velocity by acceleration
+	fruit->velocity += fruit->acceleration * dt;
+
+	// Update position by velocity
+	fruit->position += fruit->velocity * dt;
+	*/
+}
+
+glm::vec2 FruitPhysics::calcTotalForce(WatermelonGame* game, FruitObject* fruit)
+{
+	glm::vec2 totalForce = FruitPhysics::calcForce_Gravity(game, fruit);
+	totalForce += FruitPhysics::calcForce_ElasticFromBorder(game, fruit);
+	totalForce += FruitPhysics::calcForce_ElasticFromFruit(game, fruit);
+	// TODO: Other types of force
+
+	return totalForce;
+}
+
+glm::vec2 FruitPhysics::calcForce_Gravity(WatermelonGame* game, FruitObject* fruit)
+{
+	// G = mg
+	return glm::vec2(0.0f, -(fruit->getMass() * GameConfig::GravityAcceleration));
+}
+
+glm::vec2 FruitPhysics::calcForce_ElasticFromBorder(WatermelonGame* game, FruitObject* fruit)
+{
+	glm::vec2 force = glm::vec2();
+	float elasticCoefficient = fruit->getElasticCoefficient();
+	float radius = fruit->getRadius();
+	float xPos = fruit->position.x;
+	float yPos = fruit->position.y;
+	glm::vec2 velocity = fruit->velocity;
+	float overlapping, value;
+	// Top border is not considered
+
+	// Left border
+	overlapping = game->borderLeft - (xPos - radius);
+	if (overlapping > 0)
+	{
+		value = overlapping * elasticCoefficient;
+		if (velocity.x > 0) value *= 0.25f;
+		force += glm::vec2(value, 0.0f);
+	}
+
+	// Bottom border
+	overlapping = game->borderBottom - (yPos - radius);
+	if (overlapping > 0)
+	{
+		value = overlapping * elasticCoefficient;
+		if (velocity.y > 0)value *= 0.25f;
+		force += glm::vec2(0.0f, value);
+	}
+
+	// Right border
+	overlapping = (xPos + radius) - game->borderRight;
+	if (overlapping > 0)
+	{
+		value = overlapping * elasticCoefficient;
+		if (velocity.x < 0) value *= 0.25f;
+		force += glm::vec2(-value, 0.0f);
+	}
+
+	return force;
+}
+
+glm::vec2 FruitPhysics::calcForce_ElasticFromFruit(WatermelonGame* game, FruitObject* fruit)
+{
+	glm::vec2 force = glm::vec2();
+	std::vector<FruitObject*>::iterator ite = game->fruitObjects.begin();
+	for (; ite != game->fruitObjects.end(); ite++)
+	{
+		FruitObject* targetFruit = *ite;
+		if (targetFruit != fruit && !targetFruit->isDummy)
+		{
+			glm::vec2 distanceVec = fruit->position - targetFruit->position;
+			float distance = glm::length(distanceVec);
+			float radiusThis = fruit->getRadius();
+			float radiusTarget = targetFruit->getRadius();
+			if (distance < radiusThis + radiusTarget)
+			{
+				float overlapping = radiusThis + radiusTarget - distance;
+				float value = (fruit->getElasticCoefficient() + targetFruit->getElasticCoefficient()) / 2.0f * overlapping;
+				if (glm::dot(fruit->velocity, distanceVec) > 0)
+				{
+					value *= 0.25f;
+				}
+				glm::vec2 singleForce = -glm::vec2(distanceVec);
+				glm::normalize(singleForce);
+				force += glm::normalize(distanceVec) * value;
+			}
+		}
+	}
+	return force;
+}
+
+void FruitPhysics::checkFruitMerge(WatermelonGame* game)
+{
+	bool needToCheckAgain = false;
+	do
+	{
+		needToCheckAgain = false;
+		int len = game->fruitObjects.size();
+		for (int i = 0; i < len - 1; i++)
+		{
+			FruitObject* fruitA = game->fruitObjects[i];
+			if (!fruitA->isDummy && fruitA->getLevel() < GameConfig::MaxFruitLevel)
+			{
+				for (int j = i + 1; j < len; j++)
+				{
+					FruitObject* fruitB = game->fruitObjects[j];
+					if (!fruitB->isDummy && fruitA->getLevel() == fruitB->getLevel())
+					{
+						float distance = glm::length(fruitA->position - fruitB->position);
+						distance -= fruitA->getRadius() + fruitB->getRadius();
+						if (distance <= GameConfig::MergingDistance)
+						{
+							FruitPhysics::mergeFruit(game, fruitA, fruitB);
+							needToCheckAgain = true;
+							break;
+						}
+					}
+				}
+				if (needToCheckAgain) break;
+			}
+		}
+	} while (needToCheckAgain);
+}
+
+FruitObject* FruitPhysics::mergeFruit(WatermelonGame* game, FruitObject* fruitA, FruitObject* fruitB)
+{
+	glm::vec2 newFruitPos = fruitB->position + (fruitA->position - fruitB->position) / 2.0f;
+	FruitObject* newFruit = game->createFruitAt(fruitA->getLevel() + 1, newFruitPos);
+	game->destroyFruit(fruitA);
+	game->destroyFruit(fruitB);
+	return newFruit;
+}
