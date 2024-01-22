@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="DefaultTexture">
+      <UniqueIdentifier>{9ea692d4-c1b2-4e6b-9464-7825b51ca368}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Watermelon.cpp">
@@ -86,7 +89,40 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FruitVertexShader.glsl" />
-    <None Include="FruitFragmentShader.glsl" />
+    <CopyFileToFolders Include="FruitFragmentShader.glsl" />
+    <CopyFileToFolders Include="FruitVertexShader.glsl" />
+    <CopyFileToFolders Include="DefaultTexture\0.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\1.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\2.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\3.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\4.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\5.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\6.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\7.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\8.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\9.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\10.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
