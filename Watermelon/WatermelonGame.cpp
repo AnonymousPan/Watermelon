@@ -2,17 +2,18 @@
 
 WatermelonGame::WatermelonGame()
 {
-	this->windowWidth = 400;
-	this->windowHeight = 600;
+	this->windowWidth = GameConfig::GameWindowWidth;
+	this->windowHeight = GameConfig::GameWindowHeight;
 	this->windowTitle = "Watermelon";
 	this->gameWindow = nullptr;
-	this->textureManager = new TextureManager(11);
+	this->textureManager = new TextureManager(11 + 2);
 	this->calcBorder();
 	this->currentTickTime = 0.0f;
 	this->previousTickTime = 0.0f;
 	this->movingDummyFruit = false;
 	this->dummyFruitCooldown = -1.0f;
 	this->currentDummyFruit = nullptr;
+	this->score = 0;
 }
 
 WatermelonGame::~WatermelonGame()
@@ -119,6 +120,8 @@ void WatermelonGame::loadTexture()
 	{
 		this->textureManager->loadTexture(i, FruitConfigArray[i].texturePath);
 	}
+	this->textureManager->loadTexture(TEXTURE_ID_BACKGROUND, "./DefaultTexture/Background.png");
+	this->textureManager->loadTexture(TEXTURE_ID_SCORE_TEXT, "./DefaultTexture/ScoreText.png");
 }
 
 void WatermelonGame::calcBorder()
@@ -128,7 +131,7 @@ void WatermelonGame::calcBorder()
 		// Vertical or square window
 		this->borderTop = 1.0f;
 		this->borderBottom = -1.0f;
-		float lrBorder = 0.5f * (static_cast<float>(this->windowHeight) / this->windowWidth);
+		float lrBorder = static_cast<float>(this->windowWidth) / this->windowHeight;
 		this->borderLeft = -lrBorder;
 		this->borderRight = lrBorder;
 	}
@@ -137,7 +140,7 @@ void WatermelonGame::calcBorder()
 		// Horizontal window
 		this->borderLeft = -1.0f;
 		this->borderRight = 1.0f;
-		float tbBorder = 0.5f * (static_cast<float>(this->windowWidth) / this->windowHeight);
+		float tbBorder = static_cast<float>(this->windowHeight) / this->windowWidth;
 		this->borderTop = tbBorder;
 		this->borderBottom = -tbBorder;
 	}
@@ -152,6 +155,8 @@ void WatermelonGame::doRender()
 	{
 		Render::renderFruitObject(this->textureManager, *ite);
 	}
+
+	Render::renderScoreText(this->textureManager, this->borderLeft + 0.05f, this->borderTop - 0.05f, 0.1f, this->score);
 }
 
 void WatermelonGame::doTick(float dt)
@@ -213,7 +218,7 @@ float WatermelonGame::clampDummyFruitXPos(float value)
 void WatermelonGame::createDummyFruit()
 {
 	int level = rand() % (GameConfig::MaxLevelOfRandomGeneration) + 1;
-	FruitObject* fruit = this->createFruitAt(level, 0.0f, 0.9f);
+	FruitObject* fruit = this->createFruitAt(level, 0.0f, this->borderTop - 0.1f);
 	fruit->isDummy = true;
 	this->currentDummyFruit = fruit;
 }

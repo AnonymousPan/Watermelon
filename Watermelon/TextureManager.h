@@ -4,6 +4,9 @@
 #include <glad/glad.h>
 #include "stb_image.h"
 
+#define TEXTURE_ID_BACKGROUND -1
+#define TEXTURE_ID_SCORE_TEXT -2
+
 class TextureManager
 {
 public:

@@ -16,6 +16,9 @@
     <Filter Include="DefaultTexture">
       <UniqueIdentifier>{9ea692d4-c1b2-4e6b-9464-7825b51ca368}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{bc29120b-ed13-47b7-86ef-b1ea54a1dcf8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Watermelon.cpp">
@@ -89,8 +92,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FruitFragmentShader.glsl" />
-    <CopyFileToFolders Include="FruitVertexShader.glsl" />
     <CopyFileToFolders Include="DefaultTexture\0.png">
       <Filter>DefaultTexture</Filter>
     </CopyFileToFolders>
@@ -124,5 +125,25 @@
     <CopyFileToFolders Include="DefaultTexture\10.png">
       <Filter>DefaultTexture</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\ScoreText.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\Background.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="FruitFragmentShader.glsl">
+      <Filter>Shader</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="FruitVertexShader.glsl">
+      <Filter>Shader</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ScoreTextVertexShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="ScoreTextFragmentShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

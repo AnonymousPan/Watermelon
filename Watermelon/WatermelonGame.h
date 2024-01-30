@@ -35,6 +35,7 @@ public:
 	float currentTickTime, previousTickTime;
 	float borderLeft, borderRight, borderBottom, borderTop;
 	std::vector<FruitObject*> fruitObjects;
+	int score;
 
 private:
 	void loadTexture();

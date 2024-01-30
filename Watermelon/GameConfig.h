@@ -4,6 +4,8 @@
 
 namespace GameConfig
 {
+	const int GameWindowWidth = 400;
+	const int GameWindowHeight = 600;
 	const int MaxFruitLevel = 11;
 	const float GravityAcceleration = 10.0f;
 	const float DefaultFruitElasticCoefficient = 1000.0f;

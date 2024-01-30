@@ -159,6 +159,7 @@ FruitObject* FruitPhysics::mergeFruit(WatermelonGame* game, FruitObject* fruitA,
 {
 	glm::vec2 newFruitPos = fruitB->position + (fruitA->position - fruitB->position) / 2.0f;
 	FruitObject* newFruit = game->createFruitAt(fruitA->getLevel() + 1, newFruitPos);
+	game->score += fruitA->getLevel();
 	game->destroyFruit(fruitA);
 	game->destroyFruit(fruitB);
 	return newFruit;

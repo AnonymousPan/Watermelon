@@ -8,9 +8,14 @@
 unsigned int Render::glObject_FruitShaderProgram;
 unsigned int Render::glObject_FruitVertexBuffer;
 unsigned int Render::glObject_FruitVertexArray;
+unsigned int Render::glObject_ScoreTextShaderProgram;
+unsigned int Render::glObject_ScoreTextVertexBuffer;
+unsigned int Render::glObject_ScoreTextVertexArray;
 
 unsigned int Render::glUniformLocation_FruitTrans;
 unsigned int Render::glUniformLocation_FruitColor;
+unsigned int Render::glUniformLocation_ScoreTextTrans;
+unsigned int Render::glUniformLocation_ScoreTextNumberIndex;
 
 GLFWwindow* renderInit(int width, int height, const char* title)
 {
@@ -41,13 +46,7 @@ GLFWwindow* renderInit(int width, int height, const char* title)
 
     Render::initializeBuffers();
     Render::initializeShaders();
-    Render::glUniformLocation_FruitTrans = glGetUniformLocation(
-        Render::glObject_FruitShaderProgram,
-        "Uniform_Trans");
-    Render::glUniformLocation_FruitColor = glGetUniformLocation(
-        Render::glObject_FruitShaderProgram,
-        "Uniform_Color"
-    );
+    Render::getUniformLocations();
 
     // Enable alpha blend
     glEnable(GL_BLEND);
@@ -72,7 +71,7 @@ bool initializeGlad()
 
 GLFWwindow* glCreateWindow(int width, int height, const char* title)
 {
-    GLFWwindow* window = glfwCreateWindow(400, 600, "Watermelon", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, "Watermelon", NULL, NULL);
     if (window != NULL)
     {
         glfwMakeContextCurrent(window);
@@ -173,6 +172,7 @@ bool Render::loadShaderProgram(unsigned int* programObject, const char* vertexSh
 
 bool Render::initializeBuffers()
 {
+    // Fruit
     glGenBuffers(1, &Render::glObject_FruitVertexBuffer);
     glGenVertexArrays(1, &Render::glObject_FruitVertexArray);
 
@@ -188,19 +188,63 @@ bool Render::initializeBuffers()
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(0 * sizeof(float)));
     glEnableVertexAttribArray(0);
 
+    // Score Text
+    glGenBuffers(1, &Render::glObject_ScoreTextVertexBuffer);
+    glGenVertexArrays(1, &Render::glObject_ScoreTextVertexArray);
+
+    glBindBuffer(GL_ARRAY_BUFFER, Render::glObject_ScoreTextVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,
+        sizeof(Render::VertexData::vertexData_ScoreText),
+        Render::VertexData::vertexData_ScoreText,
+        GL_STATIC_DRAW);
+
+    glBindVertexArray(Render::glObject_ScoreTextVertexArray);
+
+    // Location 0: VertexData
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(0 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+
+    // END
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
     return true;
 }
 
 bool Render::initializeShaders()
 {
     return Render::loadShaderProgram(
-        &Render::glObject_FruitShaderProgram,
-        "./FruitVertexShader.glsl",
-        "./FruitFragmentShader.glsl",
-        nullptr);
+            &Render::glObject_FruitShaderProgram,
+            "./FruitVertexShader.glsl",
+            "./FruitFragmentShader.glsl",
+            nullptr)
+        && Render::loadShaderProgram(
+            &Render::glObject_ScoreTextShaderProgram,
+            "./ScoreTextVertexShader.glsl",
+            "./ScoreTextFragmentShader.glsl",
+            nullptr
+        );
+}
+
+void Render::getUniformLocations()
+{
+    // Fruit Shader Program
+    Render::glUniformLocation_FruitTrans = glGetUniformLocation(
+        Render::glObject_FruitShaderProgram,
+        "Uniform_Trans");
+    Render::glUniformLocation_FruitColor = glGetUniformLocation(
+        Render::glObject_FruitShaderProgram,
+        "Uniform_Color"
+    );
+
+    // Score Text Shader Program
+    Render::glUniformLocation_ScoreTextTrans = glGetUniformLocation(
+        Render::glObject_ScoreTextShaderProgram,
+        "Uniform_Trans"
+    );
+    Render::glUniformLocation_ScoreTextNumberIndex = glGetUniformLocation(
+        Render::glObject_ScoreTextShaderProgram,
+        "Uniform_NumberIndex"
+    );
 }
 
 void Render::clearBackground()
@@ -227,6 +271,50 @@ void Render::renderFruitObject(TextureManager* textureManager, FruitObject* frui
     glUniform4fv(Render::glUniformLocation_FruitColor, 1, color);
 
     glBindVertexArray(Render::glObject_FruitVertexArray);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+
+void Render::renderScoreText(TextureManager* textureManager, float x, float y, float textSize, int score)
+{
+    if (score > 999999) score = 999999;
+    if (score < 0) score = 0;
+    glUseProgram(Render::glObject_ScoreTextShaderProgram);
+    textureManager->bindTexture(TEXTURE_ID_SCORE_TEXT);
+
+    int base = 100000;
+    bool digitValid = score / base > 0;
+    while (base > 0)
+    {
+        int digit = score / base;
+        score %= base;
+        if (digitValid)
+        {
+            renderScoreTextDigit(x, y, textSize, digit);
+            x += textSize;
+        }
+        else
+        {
+            digitValid = base > 1 && score / (base / 10) > 0;
+        }
+        base /= 10;
+    }
+
+    if (!digitValid)
+    {
+        renderScoreTextDigit(x, y, textSize, 0);
+    }
+}
+
+void Render::renderScoreTextDigit(float x, float y, float textSize, int digit)
+{
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(x, y, 0.0f));
+    trans = glm::scale(trans, glm::vec3(textSize));
+
+    glUniformMatrix4fv(Render::glUniformLocation_ScoreTextTrans, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform1i(Render::glUniformLocation_ScoreTextNumberIndex, digit);
+    glBindVertexArray(Render::glObject_ScoreTextVertexArray);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
