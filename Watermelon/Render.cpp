@@ -318,3 +318,23 @@ void Render::renderScoreTextDigit(float x, float y, float textSize, int digit)
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
+
+void Render::renderBackground(TextureManager* textureManager, float width, float height)
+{
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(width, height, 0.0f));
+
+    // Render as a fruit and use fruit shader program
+    glUseProgram(Render::glObject_FruitShaderProgram);
+
+    //glActiveTexture(GL_TEXTURE0);
+    textureManager->bindTexture(TEXTURE_ID_BACKGROUND);
+
+    float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glUniformMatrix4fv(Render::glUniformLocation_FruitTrans, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform4fv(Render::glUniformLocation_FruitColor, 1, color);
+
+    glBindVertexArray(Render::glObject_FruitVertexArray);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}

@@ -49,4 +49,5 @@ namespace Render
 	void renderFruitObject(TextureManager* textureManager, FruitObject* fruit);
 	void renderScoreText(TextureManager* textureManager, float x, float y, float textSize, int score);
 	void renderScoreTextDigit(float x, float y, float textSize, int digit);
+	void renderBackground(TextureManager* textureManager, float width, float height);
 };

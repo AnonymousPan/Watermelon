@@ -150,6 +150,8 @@ void WatermelonGame::doRender()
 {
 	Render::clearBackground();
 
+	Render::renderBackground(this->textureManager, this->borderRight - this->borderLeft, this->borderTop - this->borderBottom);
+
 	std::vector<FruitObject*>::iterator ite = this->fruitObjects.begin();
 	for (; ite != this->fruitObjects.end(); ite++)
 	{
