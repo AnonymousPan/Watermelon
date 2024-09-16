@@ -18,8 +18,36 @@ void tickFruits(WatermelonGame* game, float dt)
 		// Update velocity by acceleration
 		fruit->velocity += fruit->acceleration * dt;
 
+		/*
+		// Test: velociy limit
+		if (glm::length(fruit->velocity) > 5.0f)
+		{
+			glm::vec2 v = glm::normalize(fruit->velocity);
+			fruit->velocity = v * 5.0f;
+		}
+		*/
+
 		// Update position by velocity
 		fruit->position += fruit->velocity * dt;
+
+		/*
+		// Test: acceleration limit
+		if (glm::length(fruit->acceleration) > 10.0f)
+		{
+			glm::vec2 a = glm::normalize(fruit->acceleration);
+			fruit->acceleration = a * 10.0f;
+		}
+		*/
+
+		// Update fruit radius scale
+		if (fruit->radiusScale < 1.0f)
+		{
+			fruit->radiusScale += GameConfig::RadiusScaleDelta * dt;
+			if (fruit->radiusScale > 1.0f)
+			{
+				fruit->radiusScale = 1.0f;
+			}
+		}
 	}
 	/*
 	// Update acceleration by total force
@@ -159,6 +187,7 @@ FruitObject* FruitPhysics::mergeFruit(WatermelonGame* game, FruitObject* fruitA,
 {
 	glm::vec2 newFruitPos = fruitB->position + (fruitA->position - fruitB->position) / 2.0f;
 	FruitObject* newFruit = game->createFruitAt(fruitA->getLevel() + 1, newFruitPos);
+	newFruit->radiusScale = GameConfig::RadiusScaleAfterMerge;
 	game->score += fruitA->getLevel();
 	game->destroyFruit(fruitA);
 	game->destroyFruit(fruitB);

@@ -21,6 +21,7 @@ public:
 	glm::vec2 acceleration;
 	float rotation;
 	float angularVelocity;
+	float radiusScale;
 private:
 	PFruitConfigEntry fruitConfig;
 };

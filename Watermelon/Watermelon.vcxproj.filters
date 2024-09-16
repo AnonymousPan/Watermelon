@@ -137,13 +137,11 @@
     <CopyFileToFolders Include="FruitVertexShader.glsl">
       <Filter>Shader</Filter>
     </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ScoreTextVertexShader.glsl">
+    <CopyFileToFolders Include="ScoreTextVertexShader.glsl">
       <Filter>Shader</Filter>
-    </None>
-    <None Include="ScoreTextFragmentShader.glsl">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="ScoreTextFragmentShader.glsl">
       <Filter>Shader</Filter>
-    </None>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
