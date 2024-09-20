@@ -18,26 +18,22 @@ void tickFruits(WatermelonGame* game, float dt)
 		// Update velocity by acceleration
 		fruit->velocity += fruit->acceleration * dt;
 
-		/*
 		// Test: velociy limit
-		if (glm::length(fruit->velocity) > 5.0f)
+		if (glm::length(fruit->velocity) > GameConfig::VelocityMax)
 		{
 			glm::vec2 v = glm::normalize(fruit->velocity);
-			fruit->velocity = v * 5.0f;
+			fruit->velocity = v * GameConfig::VelocityMax;
 		}
-		*/
 
 		// Update position by velocity
 		fruit->position += fruit->velocity * dt;
 
-		/*
 		// Test: acceleration limit
-		if (glm::length(fruit->acceleration) > 10.0f)
+		if (glm::length(fruit->acceleration) > GameConfig::AccelerationMax)
 		{
 			glm::vec2 a = glm::normalize(fruit->acceleration);
-			fruit->acceleration = a * 10.0f;
+			fruit->acceleration = a * GameConfig::AccelerationMax;
 		}
-		*/
 
 		// Update fruit radius scale
 		if (fruit->radiusScale < 1.0f)
@@ -61,6 +57,20 @@ void tickFruits(WatermelonGame* game, float dt)
 	// Update position by velocity
 	fruit->position += fruit->velocity * dt;
 	*/
+
+	bool showDDL;
+	if (FruitPhysics::tickFruitGameoverTimer(game, dt, &showDDL))
+	{
+		game->gameover();
+	}
+	if (showDDL)
+	{
+		game->deadLine->show();
+	}
+	else
+	{
+		game->deadLine->hide();
+	}
 }
 
 glm::vec2 FruitPhysics::calcTotalForce(WatermelonGame* game, FruitObject* fruit)
@@ -192,4 +202,44 @@ FruitObject* FruitPhysics::mergeFruit(WatermelonGame* game, FruitObject* fruitA,
 	game->destroyFruit(fruitA);
 	game->destroyFruit(fruitB);
 	return newFruit;
+}
+
+/// <summary>
+/// Ticks the gameover timer of fruits and check whether the game is over
+/// </summary>
+/// <param name="game">Game object</param>
+/// <param name="dt">Delta time</param>
+/// <returns>Boolean indicates whether the game is over</returns>
+bool FruitPhysics::tickFruitGameoverTimer(WatermelonGame* game, float dt, bool* showDeadline)
+{
+	bool result = false;
+	bool showDDL = false;
+	float deadlineYPos = game->borderTop - GameConfig::DeadLineToTop;
+	float deadlineShowingYPos = deadlineYPos - GameConfig::DeadLineShowingDistance;
+	for (FruitObject* fruit : game->fruitObjects)
+	{
+		if (!fruit->isDummy)
+		{
+			float fruitTop = fruit->position.y + fruit->getRadius();
+			if (fruitTop >= deadlineYPos)
+			{
+				fruit->gameoverTimer += dt;
+			}
+			else
+			{
+				fruit->gameoverTimer -= dt;
+				if (fruit->gameoverTimer < 0) fruit->gameoverTimer = 0.0f;
+			}
+			if (fruitTop >= deadlineShowingYPos && glm::length(fruit->velocity) <= 2.0f)
+			{
+				showDDL = true;
+			}
+			if (fruit->gameoverTimer >= GameConfig::GameoverTimerMax)
+			{
+				result = true;
+			}
+		}
+	}
+	*showDeadline = showDDL;
+	return result;
 }

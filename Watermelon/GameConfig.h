@@ -12,8 +12,14 @@ namespace GameConfig
 	const int MaxLevelOfRandomGeneration = 5;
 	const float DymmyFruitGenerationCooldown = 0.1f;
 	const float MergingDistance = 0.025f;
-	const float RadiusScaleAfterMerge = 0.25f;
+	const float RadiusScaleAfterMerge = 0.15f;
 	const float RadiusScaleDelta = 7.5f;
+	const float DeadLineToTop = 0.3f;
+	const float DeadLineBlinkingSpeed = 3.0f;
+	const float DeadLineShowingDistance = 0.1f;
+	const float GameoverTimerMax = 5.0f;
+	const float VelocityMax = 10.0f;
+	const float AccelerationMax = 10.0f;
 }
 
 // Grape

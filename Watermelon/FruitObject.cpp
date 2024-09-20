@@ -20,6 +20,7 @@ FruitObject::FruitObject(PFruitConfigEntry pFruitConfig, glm::vec2 pos)
 	this->rotation = 0.0f;
 	this->angularVelocity = 0.0f;
 	this->radiusScale = 1.0f;
+	this->gameoverTimer = 0.0f;
 }
 
 int FruitObject::getLevel()

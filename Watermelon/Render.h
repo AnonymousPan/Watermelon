@@ -12,6 +12,7 @@
 #include "FruitObject.h"
 #include "VertexData.h"
 #include "TextureManager.h"
+#include "Color.h"
 
 GLFWwindow* renderInit(int width, int height, const char* title);
 
@@ -27,11 +28,16 @@ namespace Render
 	extern unsigned int glObject_ScoreTextShaderProgram;
 	extern unsigned int glObject_ScoreTextVertexBuffer;
 	extern unsigned int glObject_ScoreTextVertexArray;
+	extern unsigned int glObject_UICompShaderProgram;
+	extern unsigned int glObject_UICompVertexBuffer;
+	extern unsigned int glObject_UICompVertexArray;
 
 	extern unsigned int glUniformLocation_FruitTrans;
 	extern unsigned int glUniformLocation_FruitColor;
 	extern unsigned int glUniformLocation_ScoreTextTrans;
 	extern unsigned int glUniformLocation_ScoreTextNumberIndex;
+	extern unsigned int glUniformLocation_UICompTrans;
+	extern unsigned int glUniformLocation_UICompColor;
 
 	bool loadShaderFromFile(unsigned int* shaderObject, GLenum type, const char* filename);
 	bool loadShaderProgram(
@@ -49,5 +55,4 @@ namespace Render
 	void renderFruitObject(TextureManager* textureManager, FruitObject* fruit);
 	void renderScoreText(TextureManager* textureManager, float x, float y, float textSize, int score);
 	void renderScoreTextDigit(float x, float y, float textSize, int digit);
-	void renderBackground(TextureManager* textureManager, float width, float height);
 };

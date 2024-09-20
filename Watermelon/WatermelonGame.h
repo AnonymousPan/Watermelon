@@ -11,6 +11,9 @@
 #include "GameConfig.h"
 #include "FruitPhysics.h"
 
+#include "GameBackground.h"
+#include "DeadLine.h"
+
 class WatermelonGame
 {
 public:
@@ -21,6 +24,7 @@ public:
 	void gameLoop();
 	void exit();
 	void cursorPosCallback(double x, double y);
+	void gameover();
 
 	FruitObject* createFruitAt(int level, float x, float y);
 	FruitObject* createFruitAt(int level, glm::vec2 pos);
@@ -37,6 +41,9 @@ public:
 	std::vector<FruitObject*> fruitObjects;
 	int score;
 
+	GameBackground* gameBackground;
+	DeadLine* deadLine;
+
 private:
 	void loadTexture();
 	void calcBorder();
@@ -46,7 +53,9 @@ private:
 
 	float clampDummyFruitXPos(float value);
 	void createDummyFruit();
-	void dropDummyFruit();
+	void dropDummyFruit();	
+
+	bool gameoverFlag;
 
 	bool movingDummyFruit;
 	float dummyFruitCooldown;

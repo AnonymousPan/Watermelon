@@ -19,4 +19,5 @@ namespace FruitPhysics
 	glm::vec2 calcForce_FrictionFromFruit(WatermelonGame* game, FruitObject* fruit);
 	void checkFruitMerge(WatermelonGame* game);
 	FruitObject* mergeFruit(WatermelonGame* game, FruitObject* fruitA, FruitObject* fruitB);
+	bool tickFruitGameoverTimer(WatermelonGame* game, float dt, bool* showDeadline);
 }

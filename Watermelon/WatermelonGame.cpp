@@ -6,7 +6,7 @@ WatermelonGame::WatermelonGame()
 	this->windowHeight = GameConfig::GameWindowHeight;
 	this->windowTitle = "Watermelon";
 	this->gameWindow = nullptr;
-	this->textureManager = new TextureManager(11 + 2);
+	this->textureManager = new TextureManager(32);
 	this->calcBorder();
 	this->currentTickTime = 0.0f;
 	this->previousTickTime = 0.0f;
@@ -14,11 +14,17 @@ WatermelonGame::WatermelonGame()
 	this->dummyFruitCooldown = -1.0f;
 	this->currentDummyFruit = nullptr;
 	this->score = 0;
+	this->gameoverFlag = false;
+
+	this->gameBackground = new GameBackground(this->borderRight, this->borderTop);
+	this->deadLine = new DeadLine(this->borderTop - GameConfig::DeadLineToTop, this->borderRight, 0.01f);
 }
 
 WatermelonGame::~WatermelonGame()
 {
 	delete(this->textureManager);
+	delete(this->gameBackground);
+	delete(this->deadLine);
 }
 
 bool WatermelonGame::init()
@@ -54,7 +60,7 @@ void WatermelonGame::gameLoop()
 
 	glfwPollEvents();
 
-	this->doTick(dt);
+	if (!this->gameoverFlag)this->doTick(dt);
 	this->doRender();
 
 	glfwSwapBuffers(this->gameWindow);
@@ -73,6 +79,17 @@ void WatermelonGame::cursorPosCallback(double x, double y)
 	{
 		float mappedX = x / this->windowWidth * (this->borderRight - this->borderLeft) + this->borderLeft;
 		this->currentDummyFruit->position.x = this->clampDummyFruitXPos(mappedX);
+	}
+}
+
+void WatermelonGame::gameover()
+{
+	if (!this->gameoverFlag)
+	{
+		this->gameoverFlag = true;
+		// TODO: A better gameover GUI
+		MessageBoxA(NULL, "Game over!", "Watermelon", MB_ICONWARNING | MB_OK);
+		//this->exit();
 	}
 }
 
@@ -120,8 +137,7 @@ void WatermelonGame::loadTexture()
 	{
 		this->textureManager->loadTexture(i, FruitConfigArray[i].texturePath);
 	}
-	this->textureManager->loadTexture(TEXTURE_ID_BACKGROUND, "./DefaultTexture/Background.png");
-	this->textureManager->loadTexture(TEXTURE_ID_SCORE_TEXT, "./DefaultTexture/ScoreText.png");
+	this->textureManager->loadSpecialTextures();
 }
 
 void WatermelonGame::calcBorder()
@@ -150,7 +166,7 @@ void WatermelonGame::doRender()
 {
 	Render::clearBackground();
 
-	Render::renderBackground(this->textureManager, this->borderRight - this->borderLeft, this->borderTop - this->borderBottom);
+	this->gameBackground->render(this->textureManager);
 
 	std::vector<FruitObject*>::iterator ite = this->fruitObjects.begin();
 	for (; ite != this->fruitObjects.end(); ite++)
@@ -159,11 +175,13 @@ void WatermelonGame::doRender()
 	}
 
 	Render::renderScoreText(this->textureManager, this->borderLeft + 0.05f, this->borderTop - 0.05f, 0.1f, this->score);
+
+	this->deadLine->render(this->textureManager);
 }
 
 void WatermelonGame::doTick(float dt)
 {
-	//tickFruits(this, dt / 30.0f);
+	this->deadLine->tick(dt);
 	
 	float standardTickDT = 0.0005f;
 	int ticks = dt / standardTickDT;

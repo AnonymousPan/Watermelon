@@ -22,6 +22,7 @@ public:
 	float rotation;
 	float angularVelocity;
 	float radiusScale;
+	float gameoverTimer;
 private:
 	PFruitConfigEntry fruitConfig;
 };

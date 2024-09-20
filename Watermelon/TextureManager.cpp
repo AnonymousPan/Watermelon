@@ -86,3 +86,11 @@ void TextureManager::loadTexture(int index, const char* filename)
 	stbi_image_free(textureData);
 	this->textureGLObjects[index] = glObj;
 }
+
+void TextureManager::loadSpecialTextures()
+{
+	for (int i = 0; i < NUMBER_OF_SPECIAL_TEXTURES; i++)
+	{
+		this->loadTexture(SpecialTextures[i].index, SpecialTextures[i].imageFilePath);
+	}
+}
