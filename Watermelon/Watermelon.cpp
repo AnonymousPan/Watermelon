@@ -8,10 +8,8 @@
 void cursorPosCallback(GLFWwindow* window, double x, double y);
 
 WatermelonGame game;
-int main()
+int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
-    std::cout << "Hello World!\n";
-    
     game.init();
     glfwSetCursorPosCallback(game.gameWindow, cursorPosCallback);
 
