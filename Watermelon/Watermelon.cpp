@@ -4,26 +4,77 @@
 #include <iostream>
 
 #include "WatermelonGame.h"
+#include "GUIObject.h"
+
+#include "GUIGamePlay.h"
 
 void cursorPosCallback(GLFWwindow* window, double x, double y);
+bool gameInit();
 
 WatermelonGame game;
+GUIObject* currentGUI;
+bool previousMouseKeyStatus = false;
+float mouseX = 0.0f;
+float mouseY = 0.0f;
+
+GUIGamePlay guiGamePlay(&game);
+
 int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
-    game.init();
+    if (!gameInit())
+    {
+        MessageBoxA(NULL, "Failed to initialize game", "Watermelon", MB_OK | MB_ICONERROR);
+        return 1;
+    }
     glfwSetCursorPosCallback(game.gameWindow, cursorPosCallback);
+
+    currentGUI = &guiGamePlay;
 
     while (!game.gameShouldExit())
     {
-        game.gameLoop();
+        // Process pending events
+        glfwPollEvents();
+        bool currentMouseKeyStatus = glfwGetMouseButton(game.gameWindow, GLFW_MOUSE_BUTTON_LEFT);
+        if (currentMouseKeyStatus != previousMouseKeyStatus)
+        {
+            if (currentMouseKeyStatus)
+            {
+                // Key down
+                currentGUI->onMouseDown(mouseX, mouseY);
+            }
+            else
+            {
+                // Key up
+                currentGUI->onMouseUp(mouseX, mouseY);
+            }
+        }
+        previousMouseKeyStatus = currentMouseKeyStatus;
+
+        // Tick game (physics...)
+        game.tick();
+
+        // Render
+        currentGUI->render(game.textureManager);
+        glfwSwapBuffers(game.gameWindow);
+
+        // Wait
+        Sleep(10);
     }
 
     game.exit();
+    return 0;
 }
 
 void cursorPosCallback(GLFWwindow* window, double x, double y)
 {
-    game.cursorPosCallback(x, y);
+    mouseX = x / game.windowWidth * (game.borderRight - game.borderLeft) + game.borderLeft;
+    mouseY = y / game.windowHeight * (game.borderTop - game.borderBottom) + game.borderBottom;
+    currentGUI->onMouseMove(mouseX, mouseY);
+}
+
+bool gameInit()
+{
+    return game.init();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

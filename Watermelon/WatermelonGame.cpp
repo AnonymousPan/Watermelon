@@ -51,35 +51,40 @@ bool WatermelonGame::gameShouldExit()
 	return glfwWindowShouldClose(this->gameWindow);
 }
 
-void WatermelonGame::gameLoop()
+void WatermelonGame::startMovingDummyFruit()
 {
-	this->processInput();
+	this->movingDummyFruit = true;
+}
+
+void WatermelonGame::endMovingDummyFruit()
+{
+	if (this->movingDummyFruit)
+	{
+		this->dropDummyFruit();
+	}
+	this->movingDummyFruit = false;
+}
+
+void WatermelonGame::moveDummyFruit(float mouseX)
+{
+	if (this->movingDummyFruit)
+	{
+		this->currentDummyFruit->position.x = this->clampDummyFruitXPos(mouseX);
+	}
+}
+
+void WatermelonGame::tick()
+{
 	this->previousTickTime = this->currentTickTime;
 	this->currentTickTime = glfwGetTime();
 	float dt = this->currentTickTime - this->previousTickTime;
 
-	glfwPollEvents();
-
 	if (!this->gameoverFlag)this->doTick(dt);
-	this->doRender();
-
-	glfwSwapBuffers(this->gameWindow);
-
-	Sleep(10);
 }
 
 void WatermelonGame::exit()
 {
 	glfwTerminate();
-}
-
-void WatermelonGame::cursorPosCallback(double x, double y)
-{
-	if (this->movingDummyFruit && this->currentDummyFruit != nullptr)
-	{
-		float mappedX = x / this->windowWidth * (this->borderRight - this->borderLeft) + this->borderLeft;
-		this->currentDummyFruit->position.x = this->clampDummyFruitXPos(mappedX);
-	}
 }
 
 void WatermelonGame::gameover()
@@ -89,8 +94,23 @@ void WatermelonGame::gameover()
 		this->gameoverFlag = true;
 		// TODO: A better gameover GUI
 		MessageBoxA(NULL, "Game over!", "Watermelon", MB_ICONWARNING | MB_OK);
-		//this->exit();
+		this->resetGame();
 	}
+}
+
+void WatermelonGame::resetGame()
+{
+	// Clear fruits
+	for (FruitObject* fruit : this->fruitObjects)
+	{
+		delete fruit;
+	}
+	this->fruitObjects.clear();
+
+	this->score = 0;
+	this->gameoverFlag = false;
+
+	this->createDummyFruit();
 }
 
 FruitObject* WatermelonGame::createFruitAt(int level, float x, float y)
@@ -162,23 +182,6 @@ void WatermelonGame::calcBorder()
 	}
 }
 
-void WatermelonGame::doRender()
-{
-	Render::clearBackground();
-
-	this->gameBackground->render(this->textureManager);
-
-	std::vector<FruitObject*>::iterator ite = this->fruitObjects.begin();
-	for (; ite != this->fruitObjects.end(); ite++)
-	{
-		Render::renderFruitObject(this->textureManager, *ite);
-	}
-
-	Render::renderScoreText(this->textureManager, this->borderLeft + 0.05f, this->borderTop - 0.05f, 0.1f, this->score);
-
-	this->deadLine->render(this->textureManager);
-}
-
 void WatermelonGame::doTick(float dt)
 {
 	this->deadLine->tick(dt);
@@ -206,22 +209,6 @@ void WatermelonGame::doTick(float dt)
 		{
 			this->dummyFruitCooldown -= dt;
 		}
-	}
-}
-
-void WatermelonGame::processInput()
-{
-	if (glfwGetMouseButton(this->gameWindow, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-	{
-		this->movingDummyFruit = true;
-	}
-	else
-	{
-		if (this->movingDummyFruit)
-		{
-			this->dropDummyFruit();
-		}
-		this->movingDummyFruit = false;
 	}
 }
 

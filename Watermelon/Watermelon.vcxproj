@@ -156,6 +156,8 @@
     <ClCompile Include="FruitPhysics.cpp" />
     <ClCompile Include="GameBackground.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="GUIGamePlay.cpp" />
+    <ClCompile Include="GUIObject.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -171,6 +173,8 @@
     <ClInclude Include="FruitPhysics.h" />
     <ClInclude Include="GameBackground.h" />
     <ClInclude Include="GameConfig.h" />
+    <ClInclude Include="GUIGamePlay.h" />
+    <ClInclude Include="GUIObject.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stb_image.h" />

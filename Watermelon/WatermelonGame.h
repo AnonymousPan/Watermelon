@@ -21,10 +21,13 @@ public:
 	~WatermelonGame();
 	bool init();
 	bool gameShouldExit();
-	void gameLoop();
+	void startMovingDummyFruit();
+	void endMovingDummyFruit();
+	void moveDummyFruit(float mouseX);
+	void tick();
 	void exit();
-	void cursorPosCallback(double x, double y);
 	void gameover();
+	void resetGame();
 
 	FruitObject* createFruitAt(int level, float x, float y);
 	FruitObject* createFruitAt(int level, glm::vec2 pos);
@@ -47,9 +50,7 @@ public:
 private:
 	void loadTexture();
 	void calcBorder();
-	void doRender();
 	void doTick(float dt);
-	void processInput();
 
 	float clampDummyFruitXPos(float value);
 	void createDummyFruit();

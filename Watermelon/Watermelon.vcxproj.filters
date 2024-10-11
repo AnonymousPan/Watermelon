@@ -54,6 +54,12 @@
     <ClCompile Include="GameBackground.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GUIObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIGamePlay.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -99,6 +105,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="GameBackground.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIGamePlay.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
