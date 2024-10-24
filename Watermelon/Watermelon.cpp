@@ -4,20 +4,23 @@
 #include <iostream>
 
 #include "WatermelonGame.h"
+#include "GUIManager.h"
 #include "GUIObject.h"
 
 #include "GUIGamePlay.h"
+#include "GUITitle.h"
 
 void cursorPosCallback(GLFWwindow* window, double x, double y);
 bool gameInit();
 
 WatermelonGame game;
-GUIObject* currentGUI;
 bool previousMouseKeyStatus = false;
 float mouseX = 0.0f;
 float mouseY = 0.0f;
+float previousTick = 0.0f;
 
 GUIGamePlay guiGamePlay(&game);
+GUITitle* guiTitle;
 
 int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -28,7 +31,13 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
     }
     glfwSetCursorPosCallback(game.gameWindow, cursorPosCallback);
 
-    currentGUI = &guiGamePlay;
+    guiTitle = new GUITitle(game.textureManager, game.borderTop, game.borderRight);
+
+    GUIManager::instance->registerGUI(&guiGamePlay, GUI_ID_GAME_PLAY);
+    GUIManager::instance->registerGUI(guiTitle, GUI_ID_TITLE);
+    GUIManager::instance->switchToGUIWithID(GUI_ID_TITLE);
+
+    previousTick = glfwGetTime();
 
     while (!game.gameShouldExit())
     {
@@ -40,12 +49,12 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
             if (currentMouseKeyStatus)
             {
                 // Key down
-                currentGUI->onMouseDown(mouseX, mouseY);
+                GUIManager::instance->onMouseDown(mouseX, mouseY);
             }
             else
             {
                 // Key up
-                currentGUI->onMouseUp(mouseX, mouseY);
+                GUIManager::instance->onMouseUp(mouseX, mouseY);
             }
         }
         previousMouseKeyStatus = currentMouseKeyStatus;
@@ -54,7 +63,11 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
         game.tick();
 
         // Render
-        currentGUI->render(game.textureManager);
+        float currentTick = glfwGetTime();
+        float dt = currentTick - previousTick;
+        previousTick = currentTick;
+        GUIManager::instance->preRender(dt);
+        GUIManager::instance->render(game.textureManager);
         glfwSwapBuffers(game.gameWindow);
 
         // Wait
@@ -68,13 +81,13 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 void cursorPosCallback(GLFWwindow* window, double x, double y)
 {
     mouseX = x / game.windowWidth * (game.borderRight - game.borderLeft) + game.borderLeft;
-    mouseY = y / game.windowHeight * (game.borderTop - game.borderBottom) + game.borderBottom;
-    currentGUI->onMouseMove(mouseX, mouseY);
+    mouseY = -(y / game.windowHeight * (game.borderTop - game.borderBottom) + game.borderBottom);
+    GUIManager::instance->onMouseMove(mouseX, mouseY);
 }
 
 bool gameInit()
 {
-    return game.init();
+    return GUIManager::init() && game.init();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

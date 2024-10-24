@@ -13,10 +13,12 @@ struct Texture
 	const char* imageFilePath;
 };
 
-#define NUMBER_OF_SPECIAL_TEXTURES 3
+#define NUMBER_OF_SPECIAL_TEXTURES 5
 
 const Texture SpecialTextures[] = {
 	{ TEXTURE_ID_BACKGROUND, "./DefaultTexture/Background.png" },
 	{ TEXTURE_ID_SCORE_TEXT, "./DefaultTexture/ScoreText.png" },
-	{ TEXTURE_ID_DEAD_LINE, "./DefaultTexture/DeadLine.png" }
+	{ TEXTURE_ID_GAME_TITLE, "./DefaultTexture/GameTitle.png" },
+	{ TEXTURE_ID_DEAD_LINE, "./DefaultTexture/DeadLine.png" },
+	{ TEXTURE_ID_BTN_PLAY, "./DefaultTexture/StartButton.png" }
 };

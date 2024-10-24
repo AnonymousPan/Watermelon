@@ -60,6 +60,18 @@
     <ClCompile Include="GUIGamePlay.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GUITitle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTitleImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -111,6 +123,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="GUIGamePlay.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GUITitle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTitleImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -187,6 +211,12 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="UIComponentVertexShader.glsl">
       <Filter>Shader</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\GameTitle.png">
+      <Filter>DefaultTexture</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\StartButton.png">
+      <Filter>DefaultTexture</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

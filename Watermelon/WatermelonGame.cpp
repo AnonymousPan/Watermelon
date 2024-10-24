@@ -67,7 +67,7 @@ void WatermelonGame::endMovingDummyFruit()
 
 void WatermelonGame::moveDummyFruit(float mouseX)
 {
-	if (this->movingDummyFruit)
+	if (this->movingDummyFruit && this->currentDummyFruit != nullptr)
 	{
 		this->currentDummyFruit->position.x = this->clampDummyFruitXPos(mouseX);
 	}

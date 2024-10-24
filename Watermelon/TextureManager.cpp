@@ -4,11 +4,13 @@ TextureManager::TextureManager(int capacity)
 {
 	this->capacity = capacity;
 	this->textureGLObjects = (unsigned int*)malloc(capacity * sizeof(unsigned int));
-	if (!this->textureGLObjects)
+	this->textureSizeList = (unsigned short*)malloc(capacity * 2 * sizeof(unsigned short));
+	if (!this->textureGLObjects || !this->textureSizeList)
 	{
 		throw "TextureManager: malloc failed";
 	}
 	memset(this->textureGLObjects, 0, capacity * sizeof(unsigned int));
+	memset(this->textureSizeList, 0, capacity * 2 * sizeof(unsigned short));
 }
 
 TextureManager::~TextureManager()
@@ -17,6 +19,10 @@ TextureManager::~TextureManager()
 	{
 		glDeleteTextures(this->capacity, this->textureGLObjects);
 		free(this->textureGLObjects);
+	}
+	if (this->textureSizeList)
+	{
+		free(this->textureSizeList);
 	}
 }
 
@@ -39,6 +45,23 @@ void TextureManager::bindTexture(int index)
 	if (index >= 0 && index < this->capacity)
 	{
 		glBindTexture(GL_TEXTURE_2D, this->textureGLObjects[index]);
+	}
+}
+
+bool TextureManager::getTextureSize(int index, unsigned short* width, unsigned short* height)
+{
+	if (index < 0) index = this->capacity + index;
+	if (index >= 0 && index < this->capacity)
+	{
+		*width = this->textureSizeList[index * 2];
+		*height = this->textureSizeList[index * 2 + 1];
+		return true;
+	}
+	else
+	{
+		*width = 0;
+		*height = 0;
+		return false;
 	}
 }
 
@@ -71,6 +94,11 @@ void TextureManager::loadTexture(int index, const char* filename)
 		throw "Invalid texture (channels should be 3 or 4)";
 	}
 
+	if (width >= 65536 || height >= 65536)
+	{
+		throw "Texture is too large";
+	}
+
 	unsigned int glObj;
 	glGenTextures(1, &glObj);
 
@@ -85,6 +113,8 @@ void TextureManager::loadTexture(int index, const char* filename)
 
 	stbi_image_free(textureData);
 	this->textureGLObjects[index] = glObj;
+	this->textureSizeList[2 * index] = (unsigned short)width;
+	this->textureSizeList[2 * index + 1] = (unsigned short)height;
 }
 
 void TextureManager::loadSpecialTextures()

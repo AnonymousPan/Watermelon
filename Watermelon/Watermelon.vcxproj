@@ -155,13 +155,17 @@
     <ClCompile Include="FruitObject.cpp" />
     <ClCompile Include="FruitPhysics.cpp" />
     <ClCompile Include="GameBackground.cpp" />
+    <ClCompile Include="GameTitleImage.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUIGamePlay.cpp" />
     <ClCompile Include="GUIObject.cpp" />
+    <ClCompile Include="GUITitle.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIComponent.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="Watermelon.cpp" />
     <ClCompile Include="WatermelonGame.cpp" />
   </ItemGroup>
@@ -173,14 +177,18 @@
     <ClInclude Include="FruitPhysics.h" />
     <ClInclude Include="GameBackground.h" />
     <ClInclude Include="GameConfig.h" />
+    <ClInclude Include="GameTitleImage.h" />
     <ClInclude Include="GUIGamePlay.h" />
     <ClInclude Include="GUIObject.h" />
+    <ClInclude Include="GUITitle.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureDefines.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIComponent.h" />
+    <ClInclude Include="GUIManager.h" />
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="WatermelonGame.h" />
   </ItemGroup>
@@ -272,6 +280,12 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)/DefaultTexture</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)/DefaultTexture</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\GameTitle.png">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="DefaultTexture\StartButton.png">
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
     </CopyFileToFolders>
   </ItemGroup>
