@@ -166,7 +166,7 @@ void FruitPhysics::checkFruitMerge(WatermelonGame* game)
 	do
 	{
 		needToCheckAgain = false;
-		int len = game->fruitObjects.size();
+		int len = (int)game->fruitObjects.size();
 		for (int i = 0; i < len - 1; i++)
 		{
 			FruitObject* fruitA = game->fruitObjects[i];

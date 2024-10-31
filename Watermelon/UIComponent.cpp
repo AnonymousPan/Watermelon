@@ -4,10 +4,7 @@
 
 UIComponent::UIComponent()
 {
-    this->color.r = 1.0f;
-    this->color.g = 1.0f;
-    this->color.b = 1.0f;
-    this->color.a = 1.0f;
+    this->color = COLOR_SOLID_WHITE;
     this->position = glm::vec2();
     this->scale = glm::vec2();
 }

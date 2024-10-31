@@ -29,7 +29,7 @@ WatermelonGame::~WatermelonGame()
 
 bool WatermelonGame::init()
 {
-	srand(time(0));
+	srand((unsigned int)time(0));
 	GLFWwindow* glWindow = renderInit(
 		this->windowWidth,
 		this->windowHeight,
@@ -38,7 +38,7 @@ bool WatermelonGame::init()
 	this->gameWindow = glWindow;
 	this->loadTexture();
 
-	this->currentTickTime = glfwGetTime();
+	this->currentTickTime = (float)glfwGetTime();
 	this->previousTickTime = this->currentTickTime;
 
 	this->createDummyFruit();
@@ -76,7 +76,7 @@ void WatermelonGame::moveDummyFruit(float mouseX)
 void WatermelonGame::tick()
 {
 	this->previousTickTime = this->currentTickTime;
-	this->currentTickTime = glfwGetTime();
+	this->currentTickTime = (float)glfwGetTime();
 	float dt = this->currentTickTime - this->previousTickTime;
 
 	if (!this->gameoverFlag)this->doTick(dt);
@@ -187,7 +187,7 @@ void WatermelonGame::doTick(float dt)
 	this->deadLine->tick(dt);
 	
 	float standardTickDT = 0.0005f;
-	int ticks = dt / standardTickDT;
+	int ticks = (int)(dt / standardTickDT);
 	for (int i = 0; i < ticks; i++)
 	{
 		tickFruits(this, standardTickDT);

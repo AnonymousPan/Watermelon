@@ -284,9 +284,11 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="DefaultTexture\GameTitle.png">
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
     </CopyFileToFolders>
     <CopyFileToFolders Include="DefaultTexture\StartButton.png">
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)/DefaultTexture</DestinationFolders>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

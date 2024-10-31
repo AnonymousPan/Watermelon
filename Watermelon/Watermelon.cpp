@@ -37,7 +37,7 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
     GUIManager::instance->registerGUI(guiTitle, GUI_ID_TITLE);
     GUIManager::instance->switchToGUIWithID(GUI_ID_TITLE);
 
-    previousTick = glfwGetTime();
+    previousTick = (float)glfwGetTime();
 
     while (!game.gameShouldExit())
     {
@@ -63,7 +63,7 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
         game.tick();
 
         // Render
-        float currentTick = glfwGetTime();
+        float currentTick = (float)glfwGetTime();
         float dt = currentTick - previousTick;
         previousTick = currentTick;
         GUIManager::instance->preRender(dt);
@@ -80,8 +80,8 @@ int WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 
 void cursorPosCallback(GLFWwindow* window, double x, double y)
 {
-    mouseX = x / game.windowWidth * (game.borderRight - game.borderLeft) + game.borderLeft;
-    mouseY = -(y / game.windowHeight * (game.borderTop - game.borderBottom) + game.borderBottom);
+    mouseX = (float)x / game.windowWidth * (game.borderRight - game.borderLeft) + game.borderLeft;
+    mouseY = -((float)y / game.windowHeight * (game.borderTop - game.borderBottom) + game.borderBottom);
     GUIManager::instance->onMouseMove(mouseX, mouseY);
 }
 
