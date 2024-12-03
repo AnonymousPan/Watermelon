@@ -35,6 +35,9 @@ void tickFruits(WatermelonGame* game, float dt)
 			fruit->acceleration = a * GameConfig::AccelerationMax;
 		}
 
+		// Update rotation angle by angular velocity
+		fruit->rotation += fruit->angularVelocity * dt;
+
 		// Update fruit radius scale
 		if (fruit->radiusScale < 1.0f)
 		{
@@ -78,6 +81,8 @@ glm::vec2 FruitPhysics::calcTotalForce(WatermelonGame* game, FruitObject* fruit)
 	glm::vec2 totalForce = FruitPhysics::calcForce_Gravity(game, fruit);
 	totalForce += FruitPhysics::calcForce_ElasticFromBorder(game, fruit);
 	totalForce += FruitPhysics::calcForce_ElasticFromFruit(game, fruit);
+
+	totalForce += FruitPhysics::calcForce_FrictionFromBorder(game, fruit, totalForce);
 	// TODO: Other types of force
 
 	return totalForce;
@@ -116,6 +121,9 @@ glm::vec2 FruitPhysics::calcForce_ElasticFromBorder(WatermelonGame* game, FruitO
 		value = overlapping * elasticCoefficient;
 		if (velocity.y > 0)value *= 0.25f;
 		force += glm::vec2(0.0f, value);
+
+		// Also apply angular velocity from bottom border
+		applyAngularVelocity_FromBorder(fruit, overlapping);
 	}
 
 	// Right border
@@ -132,6 +140,9 @@ glm::vec2 FruitPhysics::calcForce_ElasticFromBorder(WatermelonGame* game, FruitO
 
 glm::vec2 FruitPhysics::calcForce_ElasticFromFruit(WatermelonGame* game, FruitObject* fruit)
 {
+	// Clear fruit's angular velocity
+	float angularVelocity = 0.0f;
+
 	glm::vec2 force = glm::vec2();
 	std::vector<FruitObject*>::iterator ite = game->fruitObjects.begin();
 	for (; ite != game->fruitObjects.end(); ite++)
@@ -146,6 +157,9 @@ glm::vec2 FruitPhysics::calcForce_ElasticFromFruit(WatermelonGame* game, FruitOb
 			if (distance < radiusThis + radiusTarget)
 			{
 				float overlapping = radiusThis + radiusTarget - distance;
+				// Calculate angular velocity
+				angularVelocity += calcAngularVelocity_FromFruit(fruit, targetFruit, overlapping);
+
 				float value = (fruit->getElasticCoefficient() + targetFruit->getElasticCoefficient()) / 2.0f * overlapping;
 				if (glm::dot(fruit->velocity, distanceVec) > 0)
 				{
@@ -157,7 +171,15 @@ glm::vec2 FruitPhysics::calcForce_ElasticFromFruit(WatermelonGame* game, FruitOb
 			}
 		}
 	}
+
+	if (angularVelocity != 0)fruit->angularVelocity = angularVelocity;
 	return force;
+}
+
+glm::vec2 FruitPhysics::calcForce_FrictionFromBorder(WatermelonGame* game, FruitObject* fruit, glm::vec2 totalForce)
+{
+	float frictionValue = fruit->getMass() * GameConfig::GravityAcceleration * GameConfig::BorderFrictionCoefficient;
+	return glm::vec2(frictionValue * -glm::sign(fruit->velocity.x), 0);
 }
 
 void FruitPhysics::checkFruitMerge(WatermelonGame* game)
@@ -242,4 +264,31 @@ bool FruitPhysics::tickFruitGameoverTimer(WatermelonGame* game, float dt, bool* 
 	}
 	*showDeadline = showDDL;
 	return result;
+}
+
+float FruitPhysics::calcAngularVelocity_FromFruit(FruitObject* target, FruitObject* otherFruit, float overlapping)
+{
+	if (overlapping >= 0)
+	{
+		// Calculate relative position
+		glm::vec2 posVec = target->position - otherFruit->position;
+		// Normalize relative position vector
+		glm::vec2 direction = glm::normalize(posVec);
+		// Rotate direction vector 90deg counterclockwise
+		glm::vec2 projectionVec = glm::vec2(-direction.y, direction.x);
+		// Project velocity vector on the tangent
+		// And then calculate angular velocity with omwga=v/r
+		float angularVelocity = glm::dot(target->velocity, projectionVec) / target->getRadius();
+		return angularVelocity;
+	}
+	return 0.0f;
+}
+
+void FruitPhysics::applyAngularVelocity_FromBorder(FruitObject* fruit, float overlapping)
+{
+	if (overlapping >= 0)
+	{
+		float angularVelocity = -fruit->velocity.x / fruit->getRadius();
+		fruit->angularVelocity = angularVelocity;
+	}
 }

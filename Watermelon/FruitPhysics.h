@@ -15,9 +15,11 @@ namespace FruitPhysics
 	glm::vec2 calcForce_Gravity(WatermelonGame* game, FruitObject* fruit);
 	glm::vec2 calcForce_ElasticFromBorder(WatermelonGame* game, FruitObject* fruit);
 	glm::vec2 calcForce_ElasticFromFruit(WatermelonGame* game, FruitObject* fruit);
-	glm::vec2 calcForce_FrictionFromBorder(WatermelonGame* game, FruitObject* fruit);
+	glm::vec2 calcForce_FrictionFromBorder(WatermelonGame* game, FruitObject* fruit, glm::vec2 totalForce);
 	glm::vec2 calcForce_FrictionFromFruit(WatermelonGame* game, FruitObject* fruit);
 	void checkFruitMerge(WatermelonGame* game);
 	FruitObject* mergeFruit(WatermelonGame* game, FruitObject* fruitA, FruitObject* fruitB);
 	bool tickFruitGameoverTimer(WatermelonGame* game, float dt, bool* showDeadline);
+	float calcAngularVelocity_FromFruit(FruitObject* target, FruitObject* otherFruit, float overlapping);
+	void applyAngularVelocity_FromBorder(FruitObject* fruit, float overlapping);
 }

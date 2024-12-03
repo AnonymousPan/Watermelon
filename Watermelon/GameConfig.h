@@ -9,11 +9,12 @@ namespace GameConfig
 	const int MaxFruitLevel = 11;
 	const float GravityAcceleration = 10.0f;
 	const float DefaultFruitElasticCoefficient = 1000.0f;
+	const float BorderFrictionCoefficient = 0.005f;
 	const int MaxLevelOfRandomGeneration = 5;
 	const float DymmyFruitGenerationCooldown = 0.1f;
 	const float MergingDistance = 0.025f;
-	const float RadiusScaleAfterMerge = 0.15f;
-	const float RadiusScaleDelta = 7.5f;
+	const float RadiusScaleAfterMerge = 0.1f;
+	const float RadiusScaleDelta = 4.25f;
 	const float DeadLineToTop = 0.3f;
 	const float DeadLineBlinkingSpeed = 3.0f;
 	const float DeadLineShowingDistance = 0.1f;
